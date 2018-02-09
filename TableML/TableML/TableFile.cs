@@ -63,14 +63,19 @@ namespace TableML
     {
         /// <summary>
         /// Contents use stream, will be more effective
+        /// 流数据，可能来自硬盘文件读取
         /// </summary>
         public Stream[] ContentStreams;
 
         /// <summary>
         /// Use string to parse
+        /// 字符串数据，内容已经被读取的内存
         /// </summary>
         public string[] Contents;
 
+        /// <summary>
+        /// 分隔符
+        /// </summary>
         public char[] Separators = new char[] { '\t' };
         /// <summary>
         /// How to handle error

@@ -30,6 +30,10 @@ namespace TableML
         {
         }
 
+        /// <summary>
+        /// 表文件
+        /// </summary>
+        /// <param name="config">需求读取的数据</param>
         public TableFile(TableFileConfig config)
         {
             _config = config;
@@ -178,9 +182,13 @@ namespace TableML
 
                     TabInfo[_rowIndex] = splitString1;
 
+                    //新建行对象
                     T newT = new T();// prevent IL2CPP stripping!
+
+                    //储存行数和头信息到行对象中
                     newT.Ctor(_rowIndex, Headers);  // the New Object may not be used this time, so cache it!
 
+                    //储存行内容
                     newT.Values = splitString1;
 
                     if (!newT.IsAutoParse)
@@ -249,6 +257,7 @@ namespace TableML
             var type = tableRow.GetType();
             var okFields = new List<FieldInfo>();
 
+            //解析field
             foreach (FieldInfo field in AutoTabFields)
             {
                 if (!HasColumn(field.Name))
@@ -263,6 +272,8 @@ namespace TableML
             {
                 var fieldName = field.Name;
                 var fieldType = field.FieldType;
+
+                //通过TableRowFieldParser自动解析string to fieldType
                 var methodName = string.Format("Get_{0}", fieldType.Name);
                 var method = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
                 if (method != null)
