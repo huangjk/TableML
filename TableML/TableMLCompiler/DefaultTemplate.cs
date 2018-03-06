@@ -39,7 +39,7 @@ namespace {{ NameSpace }}
         }
 
 #if UNITY_EDITOR
-        [UnityEditor.MenuItem(""Window/Settings/Try Reload All Settings Code"")]
+        [UnityEditor.MenuItem(""Window/Ash/Settings/Try Reload All Settings Code"")]
 #endif
 	    public static void AllSettingsReload()
 	    {
@@ -215,11 +215,11 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 获取数据表行。
         /// </summary>
-        /// <param name="id">数据表行的PrimaryKey。</param>
+        /// <param name=""id"">数据表行的PrimaryKey。</param>
         /// <returns>数据表行。</returns>
-        public static {file.ClassName} Get({{ file.PrimaryKeyField.FormatType }} primaryKey)
+        public static {{file.ClassName}}Setting Get({{ file.PrimaryKeyField.FormatType }} primaryKey)
         {
-            {file.ClassName} setting;
+            {{file.ClassName}}Setting setting;
             if (GetInstance()._dict.TryGetValue(primaryKey, out setting)) return setting;
             return null;
         }
@@ -227,7 +227,7 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 检查是否存在数据表行。
         /// </summary>
-        /// <param name="primaryKey">数据表行的主Key。</param>
+        /// <param name=""primaryKey"" > 数据表行的主Key。</param>
         /// <returns>是否存在数据表行。</returns>
         public static bool HasDataRow({{ file.PrimaryKeyField.FormatType }} primaryKey)
         {
@@ -237,13 +237,13 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 检查是否存在数据表行。
         /// </summary>
-        /// <param name="condition">要检查的条件。</param>
+        /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>是否存在数据表行。</returns>
-        public static bool HasDataRow(System.Predicate<{file.ClassName}> condition)
+        public static bool HasDataRow(System.Predicate<{{file.ClassName}}Setting> condition)
         {
             if (condition == null)
             {
-                throw new System.Exception("Condition is invalid.");
+                throw new System.Exception(""Condition is invalid."");
             }
 
             foreach (var dataRow in GetInstance()._dict)
@@ -261,19 +261,19 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 获取符合条件的数据表行。
         /// </summary>
-        /// <param name="condition">要检查的条件。</param>
+        /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>符合条件的数据表行。</returns>
         /// <remarks>当存在多个符合条件的数据表行时，仅返回第一个符合条件的数据表行。</remarks>
-        public static {file.ClassName} GetDataRow(System.Predicate<{file.ClassName}> condition)
+        public static {{file.ClassName}}Setting GetDataRow(System.Predicate<{{file.ClassName}}Setting> condition)
         {
             if (condition == null)
             {
-                throw new System.Exception("Condition is invalid.");
+                throw new System.Exception(""Condition is invalid."");
             }
 
             foreach (var dataRow in GetInstance()._dict)
             {
-                {file.ClassName} dr = dataRow.Value;
+                {{file.ClassName}}Setting dr = dataRow.Value;
                 if (condition(dr))
                 {
                     return dr;
@@ -287,10 +287,10 @@ namespace {{ NameSpace }}
         /// 获取所有数据表行。
         /// </summary>
         /// <returns>所有数据表行。</returns>
-        public static {file.ClassName}[] GetAllDataRows()
+        public static {{file.ClassName}}Setting[] GetAllDataRows()
         {
             int index = 0;
-            {file.ClassName}[] allDataRows = new {file.ClassName}[GetInstance().Count];
+            {{file.ClassName}}Setting[] allDataRows = new {{file.ClassName}}Setting[GetInstance().Count];
             foreach (var dataRow in GetInstance()._dict)
             {
                 allDataRows[index++] = dataRow.Value;
@@ -302,19 +302,19 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 获取所有符合条件的数据表行。
         /// </summary>
-        /// <param name="condition">要检查的条件。</param>
+        /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>所有符合条件的数据表行。</returns>
-        public static {file.ClassName}[] GetAllDataRows(System.Predicate<{file.ClassName}> condition)
+        public static {{file.ClassName}}Setting[] GetAllDataRows(System.Predicate<{{file.ClassName}}Setting> condition)
         {
             if (condition == null)
             {
-                throw new System.Exception("Condition is invalid.");
+                throw new System.Exception(""Condition is invalid."");
             }
 
-            List<{file.ClassName}> results = new List<{file.ClassName}>();
+            List<{{file.ClassName}}Setting> results = new List<{{file.ClassName}}Setting>();
             foreach (var dataRow in GetInstance()._dict)
             {
-                {file.ClassName} dr = dataRow.Value;
+                {{file.ClassName}}Setting dr = dataRow.Value;
                 if (condition(dr))
                 {
                     results.Add(dr);
@@ -327,16 +327,16 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 获取所有排序后的数据表行。
         /// </summary>
-        /// <param name="comparison">要排序的条件。</param>
+        /// <param name=""comparison"" > 要排序的条件。</param>
         /// <returns>所有排序后的数据表行。</returns>
-        public static {file.ClassName}[] GetAllDataRows(System.Comparison<{file.ClassName}> comparison)
+        public static {{file.ClassName}}Setting[] GetAllDataRows(System.Comparison<{{file.ClassName}}Setting> comparison)
         {
             if (comparison == null)
             {
-                throw new System.Exception("Comparison is invalid.");
+                throw new System.Exception(""Comparison is invalid."");
             }
 
-            List<{file.ClassName}> allDataRows = new List<{file.ClassName}>();
+            List<{{file.ClassName}}Setting> allDataRows = new List<{{file.ClassName}}Setting>();
             foreach (var dataRow in GetInstance()._dict)
             {
                 allDataRows.Add(dataRow.Value);
@@ -349,25 +349,25 @@ namespace {{ NameSpace }}
         /// <summary>
         /// 获取所有排序后的符合条件的数据表行。
         /// </summary>
-        /// <param name="condition">要检查的条件。</param>
-        /// <param name="comparison">要排序的条件。</param>
+        /// <param name=""condition"" > 要检查的条件。</param>
+        /// <param name=""comparison"" > 要排序的条件。</param>
         /// <returns>所有排序后的符合条件的数据表行。</returns>
-        public static {file.ClassName}[] GetAllDataRows(System.Predicate<{file.ClassName}> condition, System.Comparison<{file.ClassName}> comparison)
+        public static {{file.ClassName}}Setting[] GetAllDataRows(System.Predicate<{{file.ClassName}}Setting> condition, System.Comparison<{{file.ClassName}}Setting> comparison)
         {
             if (condition == null)
             {
-                throw new System.Exception("Condition is invalid.");
+                throw new System.Exception(""Condition is invalid."");
             }
 
             if (comparison == null)
             {
-                throw new System.Exception("Comparison is invalid.");
+                throw new System.Exception(""Comparison is invalid."");
             }
 
-            List<{file.ClassName}> results = new List<{file.ClassName}>();
+            List<{{file.ClassName}}Setting> results = new List<{{file.ClassName}}Setting>();
             foreach (var dataRow in GetInstance()._dict)
             {
-                {file.ClassName} dr = dataRow.Value;
+                {{file.ClassName}}Setting dr = dataRow.Value;
                 if (condition(dr))
                 {
                     results.Add(dr);
