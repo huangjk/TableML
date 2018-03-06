@@ -112,7 +112,7 @@ namespace {{ NameSpace }}
                             if (path.Replace(""\\"", ""/"").EndsWith(path))
                             {
                                 _instance.ReloadAll();
-                                Log.LogConsole_MultiThread(""File Watcher! Reload success! -> "" + path);
+                                //UnityEngine.Debug.Log(""File Watcher! Reload success! -> "" + path);
                             }
                         });
                     }
@@ -188,7 +188,7 @@ namespace {{ NameSpace }}
 	        }
 
             ReloadCount++;
-            Log.Info(""Reload settings: {0}, Row Count: {1}, Reload Count: {2}"", GetType(), Count, ReloadCount);
+            UnityEngine.Debug.LogFormat(""Reload settings: {0}, Row Count: {1}, Reload Count: {2}"", GetType(), Count, ReloadCount);
         }
 
 	    /// <summary>
