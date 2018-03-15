@@ -31,7 +31,7 @@ namespace {{ NameSpace }}
                 {
                     _dataTablesList = new IReloadableDataTables[]
                     { {% for file in Files %}
-                        {{ file.ClassName }}DataTables._instance,{% endfor %}
+                        DT{{file.ClassName}}_Manager._instance,{% endfor %}
                     };
                 }
                 return _dataTablesList;
@@ -65,7 +65,7 @@ namespace {{ NameSpace }}
 	/// Auto Generate for Tab File: {{ file.TabFilePaths }}
     /// No use of generic and reflection, for better performance,  less IL code generating
 	/// </summary>>
-    public partial class {{file.ClassName}}DataTables : IReloadableDataTables
+    public partial class DT{{file.ClassName}}_Manager : IReloadableDataTables
     {
         /// <summary>
         /// How many reload function load?
@@ -76,8 +76,8 @@ namespace {{ NameSpace }}
         {
             {{ file.TabFilePaths }}
         };
-        internal static {{file.ClassName}}DataTables _instance = new {{file.ClassName}}DataTables();
-        Dictionary<{{ file.PrimaryKeyField.FormatType }}, {{file.ClassName}}DataTable> _dict = new Dictionary<{{ file.PrimaryKeyField.FormatType }}, {{file.ClassName}}DataTable>();
+        internal static DT{{file.ClassName}}_Manager _instance = new DT{{file.ClassName}}_Manager();
+        Dictionary<{{ file.PrimaryKeyField.FormatType }}, DT{{file.ClassName}}> _dict = new Dictionary<{{ file.PrimaryKeyField.FormatType }}, DT{{file.ClassName}}>();
 
         /// <summary>
         /// Trigger delegate when reload the DataTables
@@ -88,7 +88,7 @@ namespace {{ NameSpace }}
         /// Constructor, just reload(init)
         /// When Unity Editor mode, will watch the file modification and auto reload
         /// </summary>
-	    private {{file.ClassName}}DataTables()
+	    private DT{{file.ClassName}}_Manager()
 	    {
         }
 
@@ -96,7 +96,7 @@ namespace {{ NameSpace }}
         /// Get the singleton
         /// </summary>
         /// <returns></returns>
-	    public static {{file.ClassName}}DataTables GetInstance()
+	    public static DT{{file.ClassName}}_Manager GetInstance()
 	    {
             if (ReloadCount == 0)
             {
@@ -133,7 +133,7 @@ namespace {{ NameSpace }}
         }
 
         /// <summary>
-        /// Do reload the dataTable file: {{ file.ClassName }}, no exception when duplicate primary key
+        /// Do reload the dataTable file: {{file.ClassName}}, no exception when duplicate primary key
         /// </summary>
         public void ReloadAll()
         {
@@ -141,7 +141,7 @@ namespace {{ NameSpace }}
         }
 
         /// <summary>
-        /// Do reload the dataTable class : {{ file.ClassName }}, no exception when duplicate primary key, use custom string content
+        /// Do reload the dataTable class : {{file.ClassName}}, no exception when duplicate primary key, use custom string content
         /// </summary>
         public void ReloadAllWithString(string context)
         {
@@ -149,7 +149,7 @@ namespace {{ NameSpace }}
         }
 
         /// <summary>
-        /// Do reload the dataTable file: {{ file.ClassName }}
+        /// Do reload the dataTable file: {{file.ClassName}}
         /// </summary>
 	    void _ReloadAll(bool throwWhenDuplicatePrimaryKey, string customContent = null)
         {
@@ -166,11 +166,11 @@ namespace {{ NameSpace }}
                 {
                     foreach (var row in tableFile)
                     {
-                        var pk = {{ file.ClassName }}DataTable.ParsePrimaryKey(row);
-                        {{file.ClassName}}DataTable dataTable;
+                        var pk = DT{{file.ClassName}}.ParsePrimaryKey(row);
+                        DT{{file.ClassName}} dataTable;
                         if (!_dict.TryGetValue(pk, out dataTable))
                         {
-                            dataTable = new {{file.ClassName}}DataTable(row);
+                            dataTable = new DT{{file.ClassName}}(row);
                             _dict[dataTable.{{ file.PrimaryKeyField.Name }}] = dataTable;
                         }
                         else 
@@ -192,7 +192,7 @@ namespace {{ NameSpace }}
         }
 
 	    /// <summary>
-        /// foreachable enumerable: {{ file.ClassName }}
+        /// foreachable enumerable: {{file.ClassName}}
         /// </summary>
         public static IEnumerable GetAll()
         {
@@ -203,7 +203,7 @@ namespace {{ NameSpace }}
         }
 
         /// <summary>
-        /// GetEnumerator for `MoveNext`: {{ file.ClassName }}
+        /// GetEnumerator for `MoveNext`: {{file.ClassName}}
         /// </summary> 
 	    public static IEnumerator GetEnumerator()
 	    {
@@ -217,9 +217,9 @@ namespace {{ NameSpace }}
         /// </summary>
         /// <param name=""id"">数据表行的PrimaryKey。</param>
         /// <returns>数据表行。</returns>
-        public static {{file.ClassName}}DataTable Get({{ file.PrimaryKeyField.FormatType }} primaryKey)
+        public static DT{{file.ClassName}} Get({{ file.PrimaryKeyField.FormatType }} primaryKey)
         {
-            {{file.ClassName}}DataTable dataTable;
+            DT{{file.ClassName}} dataTable;
             if (GetInstance()._dict.TryGetValue(primaryKey, out dataTable)) return dataTable;
             return null;
         }
@@ -239,7 +239,7 @@ namespace {{ NameSpace }}
         /// </summary>
         /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>是否存在数据表行。</returns>
-        public static bool HasDataRow(System.Predicate<{{file.ClassName}}DataTable> condition)
+        public static bool HasDataRow(System.Predicate<DT{{file.ClassName}}> condition)
         {
             if (condition == null)
             {
@@ -264,7 +264,7 @@ namespace {{ NameSpace }}
         /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>符合条件的数据表行。</returns>
         /// <remarks>当存在多个符合条件的数据表行时，仅返回第一个符合条件的数据表行。</remarks>
-        public static {{file.ClassName}}DataTable GetDataRow(System.Predicate<{{file.ClassName}}DataTable> condition)
+        public static DT{{file.ClassName}} GetDataRow(System.Predicate<DT{{file.ClassName}}> condition)
         {
             if (condition == null)
             {
@@ -273,7 +273,7 @@ namespace {{ NameSpace }}
 
             foreach (var dataRow in GetInstance()._dict)
             {
-                {{file.ClassName}}DataTable dr = dataRow.Value;
+                DT{{file.ClassName}} dr = dataRow.Value;
                 if (condition(dr))
                 {
                     return dr;
@@ -287,10 +287,10 @@ namespace {{ NameSpace }}
         /// 获取所有数据表行。
         /// </summary>
         /// <returns>所有数据表行。</returns>
-        public static {{file.ClassName}}DataTable[] GetAllDataRows()
+        public static DT{{file.ClassName}}[] GetAllDataRows()
         {
             int index = 0;
-            {{file.ClassName}}DataTable[] allDataRows = new {{file.ClassName}}DataTable[GetInstance().Count];
+            DT{{file.ClassName}}[] allDataRows = new DT{{file.ClassName}}[GetInstance().Count];
             foreach (var dataRow in GetInstance()._dict)
             {
                 allDataRows[index++] = dataRow.Value;
@@ -304,17 +304,17 @@ namespace {{ NameSpace }}
         /// </summary>
         /// <param name=""condition"" > 要检查的条件。</param>
         /// <returns>所有符合条件的数据表行。</returns>
-        public static {{file.ClassName}}DataTable[] GetAllDataRows(System.Predicate<{{file.ClassName}}DataTable> condition)
+        public static DT{{file.ClassName}}[] GetAllDataRows(System.Predicate<DT{{file.ClassName}}> condition)
         {
             if (condition == null)
             {
                 throw new System.Exception(""Condition is invalid."");
             }
 
-            List<{{file.ClassName}}DataTable> results = new List<{{file.ClassName}}DataTable>();
+            List<DT{{file.ClassName}}> results = new List<DT{{file.ClassName}}>();
             foreach (var dataRow in GetInstance()._dict)
             {
-                {{file.ClassName}}DataTable dr = dataRow.Value;
+                DT{{file.ClassName}} dr = dataRow.Value;
                 if (condition(dr))
                 {
                     results.Add(dr);
@@ -329,14 +329,14 @@ namespace {{ NameSpace }}
         /// </summary>
         /// <param name=""comparison"" > 要排序的条件。</param>
         /// <returns>所有排序后的数据表行。</returns>
-        public static {{file.ClassName}}DataTable[] GetAllDataRows(System.Comparison<{{file.ClassName}}DataTable> comparison)
+        public static DT{{file.ClassName}}[] GetAllDataRows(System.Comparison<DT{{file.ClassName}}> comparison)
         {
             if (comparison == null)
             {
                 throw new System.Exception(""Comparison is invalid."");
             }
 
-            List<{{file.ClassName}}DataTable> allDataRows = new List<{{file.ClassName}}DataTable>();
+            List<DT{{file.ClassName}}> allDataRows = new List<DT{{file.ClassName}}>();
             foreach (var dataRow in GetInstance()._dict)
             {
                 allDataRows.Add(dataRow.Value);
@@ -352,7 +352,7 @@ namespace {{ NameSpace }}
         /// <param name=""condition"" > 要检查的条件。</param>
         /// <param name=""comparison"" > 要排序的条件。</param>
         /// <returns>所有排序后的符合条件的数据表行。</returns>
-        public static {{file.ClassName}}DataTable[] GetAllDataRows(System.Predicate<{{file.ClassName}}DataTable> condition, System.Comparison<{{file.ClassName}}DataTable> comparison)
+        public static DT{{file.ClassName}}[] GetAllDataRows(System.Predicate<DT{{file.ClassName}}> condition, System.Comparison<DT{{file.ClassName}}> comparison)
         {
             if (condition == null)
             {
@@ -364,10 +364,10 @@ namespace {{ NameSpace }}
                 throw new System.Exception(""Comparison is invalid."");
             }
 
-            List<{{file.ClassName}}DataTable> results = new List<{{file.ClassName}}DataTable>();
+            List<DT{{file.ClassName}}> results = new List<DT{{file.ClassName}}>();
             foreach (var dataRow in GetInstance()._dict)
             {
-                {{file.ClassName}}DataTable dr = dataRow.Value;
+                DT{{file.ClassName}} dr = dataRow.Value;
                 if (condition(dr))
                 {
                     results.Add(dr);
@@ -389,7 +389,7 @@ namespace {{ NameSpace }}
 	/// Auto Generate for Tab File: {{ file.TabFilePaths }}
     /// Singleton class for less memory use
 	/// </summary>
-	public partial class {{file.ClassName}}DataTable : TableRowFieldParser
+	public partial class DT{{file.ClassName}} : TableRowFieldParser
 	{
 		{% for field in file.Fields %}
         /// <summary>
@@ -398,7 +398,7 @@ namespace {{ NameSpace }}
         public {{ field.FormatType }} {{ field.Name}} { get; private set;}
         {% endfor %}
 
-        internal {{file.ClassName}}DataTable(TableFileRow row)
+        internal DT{{file.ClassName}}(TableFileRow row)
         {
             Reload(row);
         }
