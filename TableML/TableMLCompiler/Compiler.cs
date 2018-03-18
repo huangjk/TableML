@@ -93,6 +93,7 @@ namespace TableML.Compiler
 
                         string typeName = "string";
                         string defaultVal = "";
+                        string mySQLCharLength = "";
 
                         var attrs = excelFile.ColName2Statement[colNameStr].Split(new char[] {'|', '/'}, StringSplitOptions.RemoveEmptyEntries);
                         // Type
@@ -110,6 +111,9 @@ namespace TableML.Compiler
                             if (attrs[2] == "pk")
                             {
                                 renderVars.PrimaryKey = colNameStr;
+                            }else
+                            {
+                                mySQLCharLength = attrs[2];
                             }
                         }
 
@@ -120,6 +124,7 @@ namespace TableML.Compiler
                             Name = colNameStr,
                             DefaultValue = defaultVal,
                             Comment = excelFile.ColName2Comment[colNameStr],
+                            MySQLCharLength = mySQLCharLength,
                         });
                     }
                 }
